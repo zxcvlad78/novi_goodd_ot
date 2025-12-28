@@ -59,16 +59,16 @@ script = ExtResource("8_iveyx")
 source = "
 #//////////////////////////////////////////////////////////////////////////////////////////////////
 @rpc(\"any_peer\", \"call_remote\", \"unreliable\", %s)
-func _rpc_0_%s(packet: PackedByteArray) -> void:
-	_recieve(multiplayer.get_remote_sender_id(), %s, packet)
+func _rpc_0_%s(identity: Variant, method: Variant, args: Variant = null) -> void:
+	_recieve(multiplayer.get_remote_sender_id(), %s, identity, method, args)
 
 @rpc(\"any_peer\", \"call_remote\", \"unreliable_ordered\", %s)
-func _rpc_1_%s(packet: PackedByteArray) -> void:
-	_recieve(multiplayer.get_remote_sender_id(), %s, packet)
+func _rpc_1_%s(identity: Variant, method: Variant, args: Variant = null) -> void:
+	_recieve(multiplayer.get_remote_sender_id(), %s, identity, method, args)
 
 @rpc(\"any_peer\", \"call_remote\", \"reliable\", %s)
-func _rpc_2_%s(packet: PackedByteArray) -> void:
-	_recieve(multiplayer.get_remote_sender_id(), %s, packet)
+func _rpc_2_%s(identity: Variant, method: Variant, args: Variant = null) -> void:
+	_recieve(multiplayer.get_remote_sender_id(), %s, identity, method, args)
 
 "
 metadata/_custom_type_script = "uid://clove4axd8wav"

@@ -26,7 +26,4 @@ static func _generate_instance_int() -> int:
 	return __server_id
 
 static func _delete_instance_int() -> void:
-	__server_id -= 1
-	if __server_id < 0:
-		__server_id = 0
-	
+	pass

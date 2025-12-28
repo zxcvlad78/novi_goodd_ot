@@ -63,69 +63,55 @@ func _invoke(callable: Callable, args: Array) -> void:
 	
 
 func _invoke_on_without_validating(peer: int, callable: Callable, args: Array, config: SimusNetRPCConfig) -> void:
-	_stream_peer.clear()
-	_stream_peer.seek(0)
-	
 	var object: Object = callable.get_object()
 	
 	var identity: SimusNetIdentity = SimusNetIdentity.try_find_in(object)
-	if !identity.is_ready:
-		await identity.on_ready
 	
-	var bytes_unique_id: PackedByteArray = identity.serialize_unique_id() 
-	var bytes_method_id: PackedByteArray = config.unique_id_bytes
-	
-	_stream_peer.put_data(bytes_unique_id)
-	_stream_peer.put_data(bytes_method_id)
-	
-	if !args.is_empty():
-		_stream_peer.put_var(SimusNetSerializer.parse(args, config._serialization))
-	
-	var bytes: PackedByteArray = _stream_peer.data_array
+	var serialized_unique_id: Variant = identity.try_serialize_into_variant()
+	var serialized_method_id: Variant = SimusNetMethods.try_serialize_into_variant(callable)
 	
 	var function: StringName = _processor._parse_and_get_function(config.flag_get_channel_id(), config.flag_get_transfer_mode())
 	var p_callable: Callable = Callable(_processor, function)
-	p_callable.rpc_id(peer, bytes)
+	
+	if args.is_empty():
+		p_callable.rpc_id(peer, serialized_unique_id, serialized_method_id)
+	else:
+		if args.size() == 1:
+			p_callable.rpc_id(peer, serialized_unique_id, serialized_method_id, SimusNetSerializer.parse(args[0], config._serialization))
+		else:
+			p_callable.rpc_id(peer, serialized_unique_id, serialized_method_id, SimusNetSerializer.parse(args, config._serialization))
 	
 
-func _processor_recieve_rpc_from_peer(peer: int, channel: int, packet: PackedByteArray) -> void:
+func _processor_recieve_rpc_from_peer(peer: int, channel: int, serialized_identity: Variant, serialized_method: Variant, serialized_args: Variant) -> void:
 	_setup_remote_sender(peer, channel)
 	
-	_stream_peer.clear()
-	_stream_peer.seek(0)
-	_stream_peer.data_array = packet
-	
-	var identity_bytes: PackedByteArray = _stream_peer.get_data(SimusNetIdentity.BYTE_SIZE)[1]
-	var method_bytes: PackedByteArray = _stream_peer.get_data(SimusNetMethods.BYTES_SIZE)[1]
-	
-	var identity: SimusNetIdentity = SimusNetIdentity.deserialize_unique_id(identity_bytes)
+	var identity: SimusNetIdentity = SimusNetIdentity.try_deserialize_from_variant(serialized_identity)
 	if !identity:
-		logger.push_error("identity with %s ID not found on your instance. failed to call rpc." % SimusNetIdentity.deserialize_unique_id_into_int(identity_bytes))
+		logger.push_error("identity with %s ID not found on your instance. failed to call rpc." % serialized_identity)
 		return
 	
 	var object: Object = identity.owner
 	
-	var method_id: int = SimusNetMethods.deserialize(method_bytes)
-	var method_name: String = SimusNetMethods.get_name_by_id(method_id)
+	var method_name: String = SimusNetMethods.try_deserialize_from_variant(serialized_method)
 	
 	var rpc_handler: SimusNetRPCConfigHandler = SimusNetRPCConfigHandler.get_or_create(object)
-	var config: SimusNetRPCConfig = rpc_handler._list_by_unique_id.get(method_id)
-	var callable: Callable
+	var config: SimusNetRPCConfig = rpc_handler._list_by_name.get(method_name)
+	if !config:
+		logger.push_error("failed to find rpc config by name %s" % method_name)
+		return
 	
 	var args: Array = []
-	if packet.size() > SimusNetIdentity.BYTE_SIZE + SimusNetMethods.BYTES_SIZE:
-		var variant: Variant = _stream_peer.get_var()
-		#print(variant)
-		variant = SimusNetDeserializer.parse(variant, config._serialization)
-		#print(variant)
-		
-	return
+	if serialized_args is Array:
+		for s in serialized_args:
+			args.append(SimusNetSerializer.parse(s, config._serialization))
+	else:
+		args = [args]
+	
+	var callable: Callable
 	
 	if peer == SimusNetConnection.SERVER_ID:
 		object.callv(method_name, args)
 		return
-	
-	
 	
 	var validated_config: SimusNetRPCConfig = await _validate_callable(config.callable)
 	if !validated_config:
@@ -134,7 +120,7 @@ func _processor_recieve_rpc_from_peer(peer: int, channel: int, packet: PackedByt
 	callable = validated_config.callable
 	
 	if !callable:
-		logger.push_error("(identity ID: %s): callable with %s ID not found. failed to call rpc." % [identity.get_unique_id(), method_id])
+		logger.push_error("(identity ID: %s): callable with %s ID not found. failed to call rpc." % [serialized_identity, serialized_method])
 		return
 	
 	if !await config._validate():

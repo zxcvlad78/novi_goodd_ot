@@ -20,6 +20,7 @@ var _net_settings: SimusNetSettings
 signal _on_awaited_and_cached()
 
 static var _list_by_id: Dictionary[int, SimusNetIdentity] = {}
+static var _list_by_generated_id: Dictionary[Variant, SimusNetIdentity] = {}
 
 const BYTE_SIZE: int = 2
 
@@ -119,6 +120,8 @@ func _tree_entered() -> void:
 	else:
 		_generated_unique_id = settings.get_unique_id()
 	
+	_list_by_generated_id[_generated_unique_id] = self
+	
 	SimusNetCache._cache_identity(self)
 	
 	if SimusNetConnection.is_server():
@@ -142,6 +145,8 @@ func _set_ready() -> void:
 	SimusNetVisibility._local_identity_create(self)
 
 func _tree_exited() -> void:
+	_list_by_generated_id.erase(get_generated_unique_id())
+	
 	if !is_ready:
 		await is_ready
 	
@@ -165,6 +170,16 @@ func get_unique_id() -> int:
 
 func serialize_unique_id() -> PackedByteArray:
 	return _bytes_unique_id
+
+func try_serialize_into_variant() -> Variant:
+	if get_unique_id() >= 0:
+		return get_unique_id()
+	return get_generated_unique_id()
+
+static func try_deserialize_from_variant(variant: Variant) -> SimusNetIdentity:
+	if variant is int:
+		return _list_by_id.get(variant)
+	return _list_by_generated_id.get(variant)
 
 static func deserialize_unique_id(bytes: PackedByteArray) -> SimusNetIdentity:
 	return _list_by_id.get(deserialize_unique_id_into_int(bytes))

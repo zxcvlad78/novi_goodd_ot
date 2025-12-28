@@ -13,6 +13,7 @@ var is_ready: bool = false
 signal on_ready()
 
 var callable: Callable
+#//////////////////////////////////////////////////////////////
 
 #//////////////////////////////////////////////////////////////
 
@@ -20,6 +21,8 @@ func _initialize(handler: SimusNetRPCConfigHandler, callable: Callable) -> void:
 	self.callable = callable
 	
 	_handler = handler
+	
+	_handler._list_by_name[callable.get_method()] = self
 	
 	handler._list.set(callable, self)
 	

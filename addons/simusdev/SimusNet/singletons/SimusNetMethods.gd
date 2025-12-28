@@ -36,6 +36,17 @@ static func deserialize(bytes: PackedByteArray) -> int:
 		return -1
 	return bytes.decode_u16(0)
 
+static func try_serialize_into_variant(callable: Callable) -> Variant:
+	var method_id: int = get_id(callable)
+	if method_id > -1:
+		return method_id
+	return callable.get_method()
+
+static func try_deserialize_from_variant(variant: Variant) -> String:
+	if variant is int:
+		return get_cached().get(variant)
+	return variant as String
+
 func initialize() -> void:
 	_instance = self
 	_event_cached = SimusNetEvents.event_method_cached
