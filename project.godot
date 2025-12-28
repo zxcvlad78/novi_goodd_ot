@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="novi_goodd_ot"
+run/main_scene="uid://dw2ql5wxsu86h"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
