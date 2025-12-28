@@ -22,6 +22,37 @@ SimusDev="*uid://dnpa241s8gwqq"
 
 enabled=PackedStringArray("res://addons/YouCanDoIt/plugin.cfg", "res://addons/fancy_editor_sounds/plugin.cfg", "res://addons/simusdev/plugin.cfg")
 
+[input]
+
+move_forward={
+"deadzone": 0.2,
+"events": []
+}
+move_backward={
+"deadzone": 0.2,
+"events": []
+}
+move_left={
+"deadzone": 0.2,
+"events": []
+}
+move_right={
+"deadzone": 0.2,
+"events": []
+}
+crouch={
+"deadzone": 0.2,
+"events": []
+}
+sprint={
+"deadzone": 0.2,
+"events": []
+}
+interact={
+"deadzone": 0.2,
+"events": []
+}
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
