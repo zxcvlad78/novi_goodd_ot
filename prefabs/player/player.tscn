@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://xevh03qry08k"]
+
+[ext_resource type="Script" uid="uid://j82c1ee8tb20" path="res://prefabs/player/player.gd" id="1_sxsrd"]
+[ext_resource type="PackedScene" uid="uid://be7h2lkvpihn3" path="res://addons/simusdev/components/fp_controller/source_like/W_FPCSourceLikeMovement.tscn" id="2_wv1mm"]
+[ext_resource type="PackedScene" uid="uid://bb30gdt6q8ij" path="res://addons/simusdev/components/fp_controller/source_like/W_FPCSourceLikeCamera.tscn" id="3_binfn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wv1mm"]
+size = Vector3(1, 1.9919128, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_klv5p"]
+
+[node name="Player" type="CharacterBody3D" unique_id=536109381]
+collision_layer = 0
+script = ExtResource("1_sxsrd")
+
+[node name="Movement" parent="." unique_id=1561817904 node_paths=PackedStringArray("actor") instance=ExtResource("2_wv1mm")]
+actor = NodePath("..")
+key_forward = "move_forward"
+key_backward = "move_backward"
+key_left = "move_left"
+key_right = "move_right"
+key_jump = "jump"
+key_sprint = "sprint"
+key_crouch = "crouch"
+
+[node name="Camera" parent="." unique_id=1484931781 node_paths=PackedStringArray("body") instance=ExtResource("3_binfn")]
+body = NodePath("..")
+key_forward = "move_forward"
+key_backward = "move_backward"
+key_left = "move_left"
+key_right = "move_right"
+key_boost = "sprint"
+key_slowdown = "crouch"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1777831551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.010757446, 0)
+shape = SubResource("BoxShape3D_wv1mm")
+
+[node name="model" type="MeshInstance3D" parent="." unique_id=1931491079]
+mesh = SubResource("CapsuleMesh_klv5p")

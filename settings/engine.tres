@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SD_EngineSettings" format=3]
+
+[ext_resource type="Script" path="res://addons/simusdev/Game/build/SD_GameBuildSettings.gd" id="1_me2gm"]
+[ext_resource type="Script" path="res://addons/simusdev/multiplayer/SD_MultiplayerSettings.gd" id="2_m7xkw"]
+[ext_resource type="Script" path="res://addons/simusdev/network/SD_NetworkCacheSettings.gd" id="3_7ruvr"]
+[ext_resource type="Script" path="res://addons/simusdev/network/SD_NetworkSettings.gd" id="4_tfge0"]
+[ext_resource type="Script" path="res://addons/simusdev/popups/SD_PopupAnimationResource.gd" id="5_aioq7"]
+[ext_resource type="Script" path="res://addons/simusdev/settings/SD_EngineSettings.gd" id="6_cxv7n"]
+
+[sub_resource type="Resource" id="Resource_3krnf"]
+script = ExtResource("1_me2gm")
+
+[sub_resource type="Resource" id="Resource_ojtp8"]
+script = ExtResource("2_m7xkw")
+
+[sub_resource type="Resource" id="Resource_mmju0"]
+script = ExtResource("3_7ruvr")
+cache_resources = PackedStringArray()
+
+[sub_resource type="Resource" id="Resource_g3kiw"]
+script = ExtResource("4_tfge0")
+channels = PackedStringArray()
+cache = SubResource("Resource_mmju0")
+
+[resource]
+script = ExtResource("6_cxv7n")
+gamebuild = SubResource("Resource_3krnf")
+network = SubResource("Resource_g3kiw")
+multiplayer = SubResource("Resource_ojtp8")
