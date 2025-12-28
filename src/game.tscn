@@ -1,3 +1,14 @@
 [gd_scene format=3 uid="uid://dw2ql5wxsu86h"]
 
+[ext_resource type="Script" uid="uid://7x2il2vfpoep" path="res://addons/simusdev/network/SD_NetworkPlayerSpawner.gd" id="1_3msxb"]
+[ext_resource type="PackedScene" uid="uid://xevh03qry08k" path="res://prefabs/player/player.tscn" id="2_xq6wo"]
+
 [node name="Game" type="Node" unique_id=1679080571]
+
+[node name="PlayerSpawner" type="Node" parent="." unique_id=1755464261 node_paths=PackedStringArray("spawnpoints")]
+script = ExtResource("1_3msxb")
+scenes = Array[PackedScene]([ExtResource("2_xq6wo")])
+spawnpoints = [null]
+metadata/_custom_type_script = "uid://7x2il2vfpoep"
+
+[node name="Players" type="Node3D" parent="." unique_id=1120044888]
