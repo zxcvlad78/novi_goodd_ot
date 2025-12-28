@@ -14,6 +14,14 @@ config/name="novi_goodd_ot"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SimusDev="*uid://dnpa241s8gwqq"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/YouCanDoIt/plugin.cfg", "res://addons/fancy_editor_sounds/plugin.cfg", "res://addons/simusdev/plugin.cfg")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
