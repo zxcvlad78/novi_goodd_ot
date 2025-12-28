@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://j82c1ee8tb20" path="res://prefabs/player/player.gd" id="1_sxsrd"]
 [ext_resource type="PackedScene" uid="uid://be7h2lkvpihn3" path="res://addons/simusdev/components/fp_controller/source_like/W_FPCSourceLikeMovement.tscn" id="2_wv1mm"]
 [ext_resource type="PackedScene" uid="uid://bb30gdt6q8ij" path="res://addons/simusdev/components/fp_controller/source_like/W_FPCSourceLikeCamera.tscn" id="3_binfn"]
+[ext_resource type="Script" uid="uid://cecu76nnb2jr1" path="res://addons/simusdev/network/SD_NetNodeAuthorityVisibility.gd" id="4_binfn"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wv1mm"]
 size = Vector3(1, 1.9919128, 1)
@@ -24,6 +25,7 @@ key_sprint = "sprint"
 key_crouch = "crouch"
 
 [node name="Camera" parent="." unique_id=1484931781 node_paths=PackedStringArray("body") instance=ExtResource("3_binfn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6377597, 0)
 body = NodePath("..")
 key_forward = "move_forward"
 key_backward = "move_backward"
@@ -38,3 +40,8 @@ shape = SubResource("BoxShape3D_wv1mm")
 
 [node name="model" type="MeshInstance3D" parent="." unique_id=1931491079]
 mesh = SubResource("CapsuleMesh_klv5p")
+
+[node name="SD_NetNodeAuthorityVisibility" type="Node" parent="model" unique_id=1022585579 node_paths=PackedStringArray("_not_authority")]
+script = ExtResource("4_binfn")
+_not_authority = [NodePath("..")]
+metadata/_custom_type_script = "uid://cecu76nnb2jr1"
